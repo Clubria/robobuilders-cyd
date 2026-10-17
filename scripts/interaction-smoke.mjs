@@ -1,0 +1,143 @@
+import assert from 'node:assert/strict';
+import puppeteer from 'puppeteer';
+import { inputController } from '../server/input.mjs';
+import { settings } from '../server/render.mjs';
+import { portraitUI } from '../server/portrait.mjs';
+
+const config = settings({ VIEW_WIDTH: '640', VIEW_HEIGHT: '480' });
+const browser = await puppeteer.launch({ headless: true, executablePath: config.executablePath });
+let controls;
+try {
+  const page = await browser.newPage();
+  await page.setViewport({ width: 640, height: 480, deviceScaleFactor: 0.5, hasTouch: true });
+  await page.setContent(`<style>body{margin:0}button{position:absolute;left:20px;top:20px;width:88px;height:88px}input{position:absolute;left:150px;top:30px;width:200px}#drag{position:absolute;left:20px;top:180px;width:80px;height:80px;background:red}#drop{position:absolute;left:250px;top:180px;width:100px;height:80px;background:green}</style><button id="button">Button</button><input id="slider" type="range" min="0" max="100" value="50"><div id="drag" draggable="true">Drag</div><div id="drop">Drop</div><script>window.clicks=0;window.dropped='';window.keys={};button.onclick=()=>window.clicks++;drag.ondragstart=e=>e.dataTransfer.setData('text/plain','box');drop.ondragover=e=>e.preventDefault();drop.ondrop=e=>{e.preventDefault();window.dropped=e.dataTransfer.getData('text/plain')};window.onkeydown=e=>{window.keys[e.code]=true;e.preventDefault()};window.onkeyup=e=>window.keys[e.code]=false;</script>`);
+  controls = inputController(page, config);
+  const pointer = (phase, x, y) => controls.input({ action: 'pointer', phase, x, y }, 'usb');
+  await pointer('down', 30, 30); await pointer('up', 30, 30);
+  assert.equal(await page.evaluate(() => window.clicks), 1);
+  await pointer('down', 125, 20); await pointer('move', 170, 20); await pointer('up', 170, 20);
+  assert.ok(Number(await page.$eval('#slider', node => node.value)) > 90);
+  await pointer('down', 30, 100);
+  await pointer('move', 60, 100); await pointer('move', 140, 100); await pointer('move', 144, 100);
+  await pointer('up', 144, 100);
+  assert.equal(await page.evaluate(() => window.dropped), 'box', 'Native HTML DataTransfer drop must work');
+  await controls.latch(1);
+  await pointer('down', 30, 30); await pointer('up', 30, 30);
+  assert.equal(await page.evaluate(() => window.keys.ArrowRight), true);
+  assert.equal(await page.evaluate(() => window.clicks), 2);
+  await controls.latch(0);
+  assert.equal(await page.evaluate(() => window.keys.ArrowRight), false);
+  assert.equal(controls.getStats().pointerHeld, false);
+  console.log('PASS: scaled click, slider drag, native HTML drag/drop, held movement plus click, and release.');
+  console.log(JSON.stringify(controls.getStats()));
+  await controls.stop(); controls = null;
+  await page.setViewport({ width: 360, height: 480, deviceScaleFactor: 2 / 3, hasTouch: true });
+  await page.setContent('<button aria-label="Choose your character" onclick="window.characterClicks=(window.characterClicks||0)+1">Avatar</button><button aria-label="World map">Map</button><button aria-label="Open group chat">Group</button><button aria-label="City time and weather details">Weather</button><div class="hud-skill-controls"><button data-slot-idx="0">One</button><button data-slot-idx="1">Two</button><button data-slot-idx="3" aria-label="Play">Space</button></div><div class="game-chat-column"><form class="game-chat-form"><input placeholder="Chat"><button type="submit">Send</button></form></div>');
+  await portraitUI(page);
+  assert.ok(Math.abs(await page.evaluate(() => parseFloat(getComputedStyle(document.documentElement).fontSize)) - 27) < 0.01);
+  assert.notEqual(await page.$eval('[aria-label="World map"]', node => getComputedStyle(node).display), 'none');
+  assert.equal(await page.$eval('.game-chat-column', node => getComputedStyle(node).display), 'none');
+  const profileBox = await page.$eval('[aria-label="Choose your character"]', node => {const r=node.getBoundingClientRect();return {width:r.width,height:r.height,clip:getComputedStyle(node).clipPath,left:r.left}});
+  assert.ok(Math.abs(profileBox.width - 32/.9*1.5)<.02);
+  assert.equal(profileBox.height,48,'Avatar visible height matches32-physical-pixel globe');
+  assert.ok(profileBox.clip.startsWith('ellipse('));
+  const globeBox = await page.$eval('[aria-label="World map"]', node => {const r=node.getBoundingClientRect();return {left:r.left,height:r.height}});
+  assert.equal(profileBox.height,globeBox.height);
+  assert.ok(profileBox.left+profileBox.width<globeBox.left,'Avatar sits left of globe without overlap');
+  await page.click('[aria-label="Choose your character"]');
+  assert.equal(await page.evaluate(() => window.characterClicks), 1, 'Profile retains native character selection');
+  assert.equal(await page.$eval('.game-chat-column', node => getComputedStyle(node).display), 'none');
+  assert.equal(await page.evaluate(() => document.activeElement.matches('input')), false);
+  await page.evaluate(() => {
+    const avatar = document.querySelector('[data-cyd-avatar]');
+    const replacement = avatar.cloneNode(true); replacement.setAttribute('aria-label', 'Choose your character');
+    avatar.replaceWith(replacement);
+  });
+  await page.waitForSelector('[aria-label="Choose your character"]');
+  await page.click('[aria-label="Choose your character"]');
+  assert.equal(await page.evaluate(() => window.characterClicks), 2, 'Native action survives avatar replacement');
+  assert.equal(await page.$eval('.game-chat-column', node => getComputedStyle(node).display), 'none');
+  assert.equal(await page.$eval('#cyd-mic', node => node.disabled), true);
+  assert.equal(await page.$eval('#cyd-mic', node => getComputedStyle(node).visibility), 'hidden');
+  const row = await page.$$eval('.hud-skill-controls button', nodes => nodes.filter(node => getComputedStyle(node).visibility !== 'hidden').map(node => {
+    const r = node.getBoundingClientRect(); return { slot: node.dataset.slotIdx ?? (node.id === 'cyd-mic' ? 'mic' : 'profile'), x: r.x, y: r.y, w: r.width, h: r.height, bottom: r.bottom };
+  }).sort((a, b) => a.x - b.x));
+  assert.equal(row.length, 3);
+  assert.deepEqual(row.map(r => r.slot), ['0', '1', '3']);
+  assert.ok(row.every(r => r.h === (r.slot === '3' ? 72 : 66) && r.w === r.h && r.bottom === 477));
+  assert.ok(row[1].x-row[0].x-row[0].w>=50 && row[2].x-row[1].x-row[1].w>=50,'Actions have generous gaps');
+  assert.ok(row.every((r, i) => !i || r.x >= row[i - 1].x + row[i - 1].w));
+  assert.ok(row.every(r => Number.isInteger(r.x * 2 / 3) && Number.isInteger(r.w * 2 / 3)));
+  await page.evaluate(() => {
+    window.voiceClicks = 0;
+    const voice = document.createElement('button'); voice.title = 'Join voice room';
+    voice.onclick = () => window.voiceClicks++; document.body.append(voice);
+  });
+  await page.waitForFunction(() => !document.querySelector('#cyd-mic').disabled);
+  assert.equal(await page.$eval('#cyd-mic', node => getComputedStyle(node).visibility), 'visible');
+  assert.equal(await page.$eval('[data-cyd-avatar]', node => getComputedStyle(node).visibility), 'visible');
+  const micBox = await page.$eval('#cyd-mic', node => { const r = node.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height }; });
+  assert.deepEqual(micBox, { x: 136.5, y: 7.5, w: 54, h: 54 });
+  await page.click('#cyd-mic');
+  assert.equal(await page.evaluate(() => window.voiceClicks), 1);
+  await page.evaluate(() => { document.querySelector('button[title="Join voice room"]').disabled = true; });
+  await page.waitForFunction(() => getComputedStyle(document.querySelector('#cyd-mic')).visibility === 'hidden');
+  const unchanged = await page.$$eval('.hud-skill-controls button', nodes => nodes.filter(node => getComputedStyle(node).visibility !== 'hidden').map(node => {
+    const r = node.getBoundingClientRect(); return { slot: node.dataset.slotIdx ?? (node.id === 'cyd-mic' ? 'mic' : 'profile'), x: r.x, y: r.y, w: r.width, h: r.height, bottom: r.bottom };
+  }).sort((a, b) => a.x - b.x));
+  assert.deepEqual(unchanged, row, 'Mic availability must not shift any controls');
+  await page.evaluate(() => {
+    const action = document.querySelector('[data-slot-idx="3"]');
+    window.actionClicks = 0; action.onclick = () => window.actionClicks++;
+    action.setAttribute('aria-label', 'Jump');
+  });
+  await page.waitForFunction(() => getComputedStyle(document.querySelector('[data-slot-idx="3"]')).visibility === 'visible');
+  assert.equal(await page.$eval('#cyd-action-caption', node => node.hidden), true);
+  await page.$eval('[data-slot-idx="3"]', node => node.setAttribute('aria-label', 'Play'));
+  await page.waitForFunction(() => getComputedStyle(document.querySelector('[data-slot-idx="3"]')).visibility === 'visible');
+  controls = inputController(page, { width: 240, height: 320, viewWidth: 360, viewHeight: 480 });
+  const actionPoint = await page.$eval('[data-slot-idx="3"]', node => { const r = node.getBoundingClientRect(); return {x: (r.x + r.width / 2) * 2 / 3, y: (r.y + r.height / 2) * 2 / 3}; });
+  await controls.input({action:'pointer', phase:'down', ...actionPoint}, 'cyd');
+  await controls.input({action:'pointer', phase:'up', ...actionPoint}, 'cyd');
+  assert.equal(await page.evaluate(() => window.actionClicks), 1, 'Smaller native action receives exactly one forwarded click');
+  assert.equal(controls.getStats().inputErrors, 0);
+  await page.evaluate(() => {
+    const duplicate = document.createElement('button'); duplicate.dataset.slotIdx = '3'; duplicate.setAttribute('aria-label', 'Mount');
+    document.querySelector('.hud-skill-controls').append(duplicate);
+  });
+  await page.waitForFunction(() => [...document.querySelectorAll('[data-slot-idx="3"]')].filter(n => getComputedStyle(n).display !== 'none' && getComputedStyle(n).visibility !== 'hidden').length === 1);
+  assert.equal(await page.$eval('#cyd-action-caption', n => getComputedStyle(n).display), 'none', 'Do not duplicate the native world action label');
+  await page.evaluate(() => {
+    const chooser = document.createElement('section'); chooser.className = 'character-chooser';
+    chooser.style.cssText = 'position:fixed;top:60px;bottom:0;background:#102030;z-index:2147483647';
+    chooser.innerHTML = '<header class="chooser-header"><div role="tablist"></div><button aria-label="Manage characters" aria-expanded="false">More</button></header><div class="chooser-manage"></div>';
+    chooser.querySelector('button').onclick = event => {
+      event.currentTarget.setAttribute('aria-expanded', 'true');
+      const nav = document.createElement('nav'); nav.setAttribute('aria-label', 'Character and Hub menu');
+      const people = document.createElement('button'); people.textContent = 'People';
+      people.onclick = () => {
+        window.hubOpens = (window.hubOpens || 0) + 1; chooser.remove();
+        const dialog = document.createElement('section'); dialog.dataset.testid = 'hub-directory';
+        dialog.innerHTML = '<section aria-label="Contributors"><article class="hub-person-card" id="available-person"><button aria-label="Play as Fixture">Play</button></article><article class="hub-person-card" id="missing-person"><button id="create-fixture">Create avatar</button></article></section>';
+        dialog.querySelector('#create-fixture').onclick = () => window.creates = (window.creates || 0) + 1;
+        document.body.append(dialog);
+      };
+      nav.append(people); chooser.querySelector('.chooser-manage').append(nav);
+    };
+    document.body.append(chooser);
+    const css = document.createElement('style'); css.textContent = '.character-chooser button{position:static!important;width:auto!important}.chooser-header{display:flex}';document.head.append(css);
+  });
+  await page.waitForSelector('#cyd-hub', {visible:true});
+  await page.click('#cyd-hub');
+  await page.waitForSelector('#cyd-hub-filter');
+  assert.equal(await page.evaluate(() => window.hubOpens), 1);
+  assert.equal(await page.$eval('#available-person', n => getComputedStyle(n).display), 'none');
+  assert.notEqual(await page.$eval('#missing-person', n => getComputedStyle(n).display), 'none');
+  await page.click('#cyd-hub-filter button');
+  assert.notEqual(await page.$eval('#available-person', n => getComputedStyle(n).display), 'none');
+  assert.equal(await page.evaluate(() => window.creates || 0), 0, 'Opening/filtering Hub must not create characters');
+  console.log('PASS: native profile selection/replacement, text chat hidden, non-overlapping profile/mic/actions, and room-gated native mic forwarding (no recording).');
+} finally {
+  await controls?.stop();
+  await browser.close();
+}

@@ -1,0 +1,43 @@
+{
+  "name": "robobuilders-cyd",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node server/index.mjs",
+    "dev:pixsim": "FRAME_SOURCE=pixsim STREAM=1 CAPTURE_WAIT_MS=10000 PIXSIM_URL='http://localhost:4736/newyork?s=n&ui=min' node server/index.mjs",
+    "dev:cyd": "FRAME_SOURCE=pixsim STREAM=1 CYD_CONTROLS=1 CYD_PORTRAIT=1 WIDTH=240 HEIGHT=320 VIEW_WIDTH=360 VIEW_HEIGHT=480 JPEG_QUALITY=55 FPS=8 CAPTURE_WAIT_MS=20000 PIXSIM_URL='https://pixsim.vercel.app/newyork' node server/index.mjs",
+    "dev:compact": "FRAME_SOURCE=pixsim STREAM=1 CYD_CONTROLS=1 CYD_PORTRAIT=1 CYD_COMPACT=1 CYD_CACHE=1 CAPTURE_MODE=screencast WIDTH=240 HEIGHT=320 VIEW_WIDTH=360 VIEW_HEIGHT=480 JPEG_QUALITY=65 FPS=24 CAPTURE_WAIT_MS=20000 PIXSIM_URL='https://pixsim.vercel.app/newyork' node server/index.mjs",
+    "dev:clubria": "FRAME_SOURCE=clubria STREAM=1 CAPTURE_MODE=screenshot WIDTH=240 HEIGHT=320 VIEW_WIDTH=240 VIEW_HEIGHT=320 JPEG_QUALITY=65 FPS=3 CAPTURE_WAIT_MS=3000 node server/index.mjs",
+    "dev:clubria:fast": "FRAME_SOURCE=clubria STREAM=1 CAPTURE_MODE=screenshot WIDTH=240 HEIGHT=320 VIEW_WIDTH=240 VIEW_HEIGHT=320 JPEG_QUALITY=50 FPS=4 CAPTURE_WAIT_MS=3000 node server/index.mjs",
+    "stream:usb": "python3 scripts/usb_stream.py",
+    "receiver": "python3 scripts/receiver_control.py",
+    "connect:cyd": "python3 .opencode/skills/cyd-setup/scripts/connect.py",
+    "package:skills": "python3 scripts/package_cyd_skills.py",
+    "package:bridge": "python3 scripts/package_bridge.py",
+    "build:site": "node scripts/check-apps.mjs && python3 scripts/build_site.py",
+    "test:latency": "node scripts/latency-smoke.mjs",
+    "test:usb": "python3 -m unittest discover -s test -p '*_test.py'",
+    "test": "node --test test/*.test.mjs",
+    "test:browser": "node scripts/smoke.mjs",
+    "test:interaction": "node scripts/interaction-smoke.mjs",
+    "test:portrait": "node scripts/portrait-smoke.mjs",
+    "test:speech": "node scripts/speech-smoke.mjs",
+    "test:presence": "node scripts/presence-smoke.mjs",
+    "test:ui-recovery": "node scripts/ui-recovery-smoke.mjs",
+    "test:weather": "node scripts/weather-smoke.mjs",
+    "test:doubletap": "node scripts/doubletap-smoke.mjs",
+    "test:setup": "node scripts/setup-page-smoke.mjs",
+    "test:layout": "node scripts/layout-experiments.mjs",
+    "test:clubria": "node scripts/clubria-smoke.mjs",
+    "test:guide": "node scripts/guide-smoke.mjs",
+    "test:site": "node scripts/site-smoke.mjs"
+  },
+  "dependencies": {
+    "puppeteer": "^24.0.0",
+    "ws": "^8.18.3"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

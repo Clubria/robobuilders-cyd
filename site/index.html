@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Connect your small ESP32 display. Download the bridge, ask your AI agent, and choose an app.">
+<title>CYD · Little screen, real apps</title>
+<style>
+:root{font:17px/1.5 system-ui;color:#20262a;background:#fafaf8}*{box-sizing:border-box}body{margin:0}main{max-width:680px;margin:0 auto;padding:40px 20px}h1{font-size:clamp(32px,7vw,48px);letter-spacing:-1.8px;line-height:1.08;margin:12px 0 20px}h2{font-size:23px;margin:32px 0 12px}h3{margin:8px 0}p{margin:10px 0}a{color:#285c74}small,.muted{color:#687177}button,.button{font:inherit;display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:10px 18px;border:1px solid #d9ddda;border-radius:10px;background:white;color:inherit;text-decoration:none;cursor:pointer}.primary{background:#20262a;color:white;border-color:#20262a}.actions{display:flex;gap:8px;flex-wrap:wrap}pre{white-space:pre-wrap;font:14px/1.5 ui-monospace,monospace;overflow-wrap:anywhere;padding:16px;background:#eff1ed;border-radius:12px}.notice{padding:12px 16px;background:#fff1d6;border-radius:12px;font-size:14px}.steps{list-style:none;padding:0}.steps>li{margin:28px 0}.number{display:inline-grid;place-items:center;width:30px;height:30px;background:#e9ede8;border-radius:50%;margin-right:8px}.carousel{display:flex;overflow-x:auto;gap:16px;scroll-snap-type:x mandatory;padding:4px 0 12px}.app{flex:0 0 100%;scroll-snap-align:start;min-width:0}.preview{aspect-ratio:15/4;display:grid;place-items:center;border-radius:14px;color:white;font-size:26px;font-weight:700;letter-spacing:-.7px;background:var(--app-color)}details{margin:18px 0}summary{min-height:44px;cursor:pointer}li{margin:8px 0}footer{margin-top:36px;font-size:14px;border-top:1px solid #dde2db;padding-top:16px}code{overflow-wrap:anywhere}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+</style>
+<main>
+<small>AI BUILDERS · CYD</small>
+<h1>Little screen.<br>Real apps.</h1>
+<p>Connect once. Pick Clubria or Pixsim.</p>
+<p class="notice"><b>Works today:</b> a nearby Mac renders the app.<br><b>Coming next:</b> shared Amsterdam rendering. This site is setup help and a directory, not the renderer.</p>
+<ol class="steps">
+<li><h2><span class="number">1</span>Computer</h2>
+<p>Download, unzip, then open the folder in your AI coding agent.</p>
+<div class="actions"><a class="button primary" href="/downloads/cyd-bridge.zip" download>↓ Download ZIP</a><a class="button" href="https://github.com/Clubria/robobuilders-cyd">GitHub ↗</a></div>
+<p>Ask your agent:</p>
+<pre id="prompt">Read AGENTS.md. Start the Clubria display bridge.
+Use the lockfile and existing viewer firmware.
+Detect my connected display without flashing it.
+Save this computer's LAN bridge address over USB.
+Help me connect the display to home Wi-Fi.
+Keep passwords private and the bridge LAN-only.</pre>
+<button id="copy" type="button">Copy prompt</button><span id="copy-status" role="status"></span>
+<details><summary>Prefer Terminal?</summary><p>On a Mac with Node.js 22+, pnpm, Python 3 and Chrome installed, open the unzipped folder and run:</p><pre>pnpm install --frozen-lockfile
+pnpm dev:clubria</pre><p>Keep the computer awake and Terminal running. Check <a href="http://localhost:3088/preview">localhost:3088/preview</a> on that computer.</p></details>
+</li>
+<li><h2><span class="number">2</span>Display</h2>
+<p>Plug in USB for power. Use <b>2 Wi-Fi</b> to join the display's setup network with your phone. Use <b>3 Phone</b> to open setup, choose home 2.4 GHz Wi-Fi, and save.</p>
+<p class="muted">Use the checkboxes for your own checklist. The Done button continues. Actual Wi-Fi and picture status are shown separately.</p>
+</li>
+<li><h2><span class="number">3</span>Choose an app</h2>
+<div class="actions"><button id="previous" aria-label="Previous app">←</button><button id="next" aria-label="Next app">→</button></div>
+<div class="carousel" id="apps" aria-label="App directory" tabindex="0"><p>Loading apps…</p></div>
+<p class="muted">Open buttons launch the web app on this phone/computer. Opening these websites directly on the ESP32 is not supported yet.</p>
+</li></ol>
+<details><summary>Speed, hardware and privacy</summary><ul>
+<li>Supported prototype boards: ESP32-024 2.4″ and GUITION JC2432W328 2.8″. Other boards need verified wiring and firmware.</li>
+<li>USB video has measured about 1 FPS at115200. Faster USB is experimental. Wi-Fi game samples on the larger board reached5–7 FPS; higher observations still need measurement.</li>
+<li>No built-in camera or microphone. The phone scans QR codes. A recording app needs an authorized account and an actual audio source.</li>
+<li>Wi-Fi passwords stay on your display. The public ZIP excludes device settings, credentials, backups and browser profiles.</li>
+<li>The local bridge is unauthenticated. Trusted LAN only; do not expose port3088 to the internet.</li>
+</ul></details>
+<footer><a href="https://github.com/Clubria/robobuilders-cyd/blob/main/CONTRIBUTING.md">Add your app</a> · <a href="/apps.json">App catalogue JSON</a><p class="muted">The short link aib.club/cyd still needs its owner to configure the redirect.</p></footer>
+</main>
+<script>
+const carousel=document.querySelector('#apps');
+fetch('/apps.json').then(r=>{if(!r.ok)throw Error();return r.json()}).then(data=>{
+  carousel.replaceChildren();
+  for(const app of data.apps){const url=new URL(app.url);if(url.protocol!=='https:'||url.username||url.password)continue;
+    const card=document.createElement('article');card.className='app';
+    const image=document.createElement('div');image.className='preview';image.style.setProperty('--app-color',/^#[0-9a-f]{6}$/i.test(app.color)?app.color:'#317567');image.textContent=app.name;
+    const text=document.createElement('p');text.textContent=app.description;
+    const access=document.createElement('p');access.className='muted';access.textContent=app.access;
+    const link=document.createElement('a');link.className='button';link.href=url.href;link.textContent='Open web app ↗';link.rel='noopener noreferrer';link.target='_blank';
+    card.append(image,text,access,link);carousel.append(card);
+  }
+}).catch(()=>{carousel.textContent='Apps unavailable. Please reload.'});
+document.querySelector('#previous').onclick=()=>carousel.scrollBy({left:-carousel.clientWidth-16,behavior:'smooth'});
+document.querySelector('#next').onclick=()=>carousel.scrollBy({left:carousel.clientWidth+16,behavior:'smooth'});
+document.querySelector('#copy').onclick=async()=>{try{await navigator.clipboard.writeText(document.querySelector('#prompt').textContent);document.querySelector('#copy-status').textContent=' Copied ✓'}catch{document.querySelector('#copy-status').textContent=' Select and copy the text above.'}};
+</script>
+</html>

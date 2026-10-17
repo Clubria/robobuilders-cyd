@@ -1,0 +1,30 @@
+import assert from 'node:assert/strict';
+import puppeteer from 'puppeteer';
+import { settings } from '../server/render.mjs';
+import { presenceUI } from '../server/presence.mjs';
+const browser = await puppeteer.launch({headless:true,executablePath:settings({}).executablePath});
+try {
+  const page = await browser.newPage();
+  await page.setViewport({width:360,height:480,deviceScaleFactor:2/3});
+  await page.setContent('<style>button[aria-label^="Go to "]{display:none!important}</style><div class="online-player-hud"><button class="online-player-name" aria-label="Go to Fixture, live player">Fixture</button><button class="online-player-name is-npc" aria-label="Go to Resident, active NPC">Resident</button></div>');
+  await page.evaluate(() => {window.fixtureScene={player:{x:10,y:10,body:{velocity:{x:0,y:0}}}};window.__PIXSIM_GAME__={scene:{getScene:()=>window.fixtureScene}}});
+  await presenceUI(page, {idleMs:200});
+  await page.waitForFunction(() => window.__cydPresenceStats.still);
+  assert.notEqual(await page.$eval('.online-player-hud', n=>getComputedStyle(n).display), 'none');
+  const rows = await page.$$eval('.online-player-name', nodes=>nodes.map(n=>{const r=n.getBoundingClientRect(),s=getComputedStyle(n);return {top:r.top,bottom:r.bottom,font:parseFloat(s.fontSize),padding:s.padding,display:s.display}}));
+  assert.equal(rows[0].bottom, rows[1].top, 'No vertical gaps');
+  assert.equal(rows[0].padding,'0px');
+  assert.equal(rows[0].font,18, '12 physical pixels at2/3DPR');
+  assert.equal(rows[0].display,'flex');
+  await page.evaluate(()=>window.fixtureScene.player.body.velocity.x=10);
+  await page.waitForFunction(()=>!window.__cydPresenceStats.still);
+  assert.equal(await page.$eval('.online-player-hud', n=>getComputedStyle(n).display), 'none');
+  await page.evaluate(()=>window.fixtureScene.player.body.velocity.x=0);
+  await page.waitForFunction(()=>window.__cydPresenceStats.still);
+  await page.evaluate(()=>window.fixtureScene.player.x+=20);
+  await page.waitForFunction(()=>!window.__cydPresenceStats.still);
+  await page.waitForFunction(()=>window.__cydPresenceStats.still);
+  await page.evaluate(()=>window.__cydPresenceCleanup());
+  assert.equal(await page.$('#cyd-presence-style'),null);
+  console.log('PASS: zero vertical gaps, larger native roster, moving/standing debounce, position changes and cleanup.');
+} finally {await browser.close();}

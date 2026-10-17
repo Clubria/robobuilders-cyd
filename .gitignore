@@ -1,0 +1,12 @@
+node_modules/
+.env
+.env.*
+!.env.example
+firmware/secrets.h
+.pio/
+artifacts/
+*.log
+.DS_Store
+site/downloads/
+__pycache__/
+*.pyc

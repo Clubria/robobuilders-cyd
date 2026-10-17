@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "rendererReady": false,
+  "apps": [
+    {
+      "id": "clubria",
+      "name": "Clubria",
+      "description": "Event picker, slides and recorder controls.",
+      "url": "https://aibuilders.club/events",
+      "access": "Public browsing; event controls require sign-in.",
+      "color": "#7759c2"
+    },
+    {
+      "id": "pixsim",
+      "name": "Pixsim",
+      "description": "Explore the city with your character.",
+      "url": "https://pixsim.vercel.app/newyork",
+      "access": "Game rendered by the computer or a configured server.",
+      "color": "#317567"
+    }
+  ]
+}

@@ -8,7 +8,7 @@
     "dev:pixsim": "FRAME_SOURCE=pixsim STREAM=1 CAPTURE_WAIT_MS=10000 PIXSIM_URL='http://localhost:4736/newyork?s=n&ui=min' node server/index.mjs",
     "dev:cyd": "FRAME_SOURCE=pixsim STREAM=1 CYD_CONTROLS=1 CYD_PORTRAIT=1 WIDTH=240 HEIGHT=320 VIEW_WIDTH=360 VIEW_HEIGHT=480 JPEG_QUALITY=55 FPS=8 CAPTURE_WAIT_MS=20000 PIXSIM_URL='https://pixsim.vercel.app/newyork' node server/index.mjs",
     "dev:compact": "FRAME_SOURCE=pixsim STREAM=1 CYD_CONTROLS=1 CYD_PORTRAIT=1 CYD_COMPACT=1 CYD_CACHE=1 CAPTURE_MODE=screencast WIDTH=240 HEIGHT=320 VIEW_WIDTH=360 VIEW_HEIGHT=480 JPEG_QUALITY=65 FPS=24 CAPTURE_WAIT_MS=20000 PIXSIM_URL='https://pixsim.vercel.app/newyork' node server/index.mjs",
-    "dev:clubria": "FRAME_SOURCE=clubria STREAM=1 CAPTURE_MODE=screenshot WIDTH=240 HEIGHT=320 VIEW_WIDTH=240 VIEW_HEIGHT=320 JPEG_QUALITY=65 FPS=3 CAPTURE_WAIT_MS=3000 node server/index.mjs",
+    "dev:clubria": "node scripts/start-clubria.mjs",
     "dev:clubria:fast": "FRAME_SOURCE=clubria STREAM=1 CAPTURE_MODE=screenshot WIDTH=240 HEIGHT=320 VIEW_WIDTH=240 VIEW_HEIGHT=320 JPEG_QUALITY=50 FPS=4 CAPTURE_WAIT_MS=3000 node server/index.mjs",
     "stream:usb": "python3 scripts/usb_stream.py",
     "receiver": "python3 scripts/receiver_control.py",

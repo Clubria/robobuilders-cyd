@@ -2,71 +2,84 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="description" content="Build, share and explore apps for CYD displays. Use your phone or computer to set up and preview your buildathon app.">
-<title>AI Builders · CYD App Explorer</title>
+<meta name="description" content="Four steps to set up your CYD. Copy the commands, connect Wi-Fi, and pick an app.">
+<title>AI Builders · CYD Setup Guide</title>
 <style>
-:root{font:17px/1.5 system-ui;color:#20262a;background:#fafaf8}*{box-sizing:border-box}body{margin:0}main{max-width:680px;margin:0 auto;padding:40px 20px}h1{font-size:clamp(32px,7vw,48px);letter-spacing:-1.8px;line-height:1.08;margin:12px 0 20px}h2{font-size:23px;margin:32px 0 12px}h3{margin:8px 0}p{margin:10px 0}a{color:#285c74}small,.muted{color:#687177}button,.button{font:inherit;display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:10px 18px;border:1px solid #d9ddda;border-radius:10px;background:white;color:inherit;text-decoration:none;cursor:pointer}.primary{background:#20262a;color:white;border-color:#20262a}.actions{display:flex;gap:8px;flex-wrap:wrap}pre{white-space:pre-wrap;font:14px/1.5 ui-monospace,monospace;overflow-wrap:anywhere;padding:16px;background:#eff1ed;border-radius:12px}.notice{padding:12px 16px;background:#fff1d6;border-radius:12px;font-size:14px}.steps{list-style:none;padding:0}.steps>li{margin:28px 0}.number{display:inline-grid;place-items:center;width:30px;height:30px;background:#e9ede8;border-radius:50%;margin-right:8px}.carousel{display:flex;overflow-x:auto;gap:16px;scroll-snap-type:x mandatory;padding:4px 0 12px}.app{flex:0 0 100%;scroll-snap-align:start;min-width:0}.preview{aspect-ratio:15/4;display:grid;place-items:center;border-radius:14px;color:white;font-size:26px;font-weight:700;letter-spacing:-.7px;background:var(--app-color)}details{margin:18px 0}summary{min-height:44px;cursor:pointer}li{margin:8px 0}footer{margin-top:36px;font-size:14px;border-top:1px solid #dde2db;padding-top:16px}code{overflow-wrap:anywhere}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+*{box-sizing:border-box}body{margin:0;background:#fafbf8;color:#202722;font:16px/1.45 system-ui}main{max-width:540px;margin:auto;padding:20px 14px}header{display:flex;align-items:center;justify-content:space-between;gap:12px}header small{font-size:11px;letter-spacing:.08em;color:#68716b}header a{font-size:13px;color:inherit}h1{font-size:28px;letter-spacing:-1px;line-height:1.15;margin:10px 0 20px}h2{font-size:21px;letter-spacing:-.4px;margin:22px 0 10px}p{margin:10px 0}a{color:#315b44}button,.button{font:inherit;min-height:44px;border:1px solid #dce2d9;border-radius:8px;padding:9px 14px;background:#fff;color:inherit;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;text-decoration:none}.primary{background:#253d2c;color:white;border-color:#253d2c}.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;position:sticky;top:0;background:#fafbf8;padding:8px 0;z-index:2}.steps button{padding:8px 2px;display:grid;gap:2px;border-color:transparent;background:transparent;font-size:12px}.steps button[aria-selected=true]{background:#e9eee5;border-color:#d9e1d4}.steps b{font-size:17px}.steps .done b::after{content:' ✓';color:#397246;font-size:12px}.platform{display:flex;gap:4px}.platform button{min-width:78px;font-size:14px}.platform button[aria-pressed=true]{background:#e9eee5;border-color:#b9c7b2}pre{font:13px/1.55 ui-monospace,monospace;white-space:pre-wrap;overflow-wrap:anywhere;background:#edf0e9;border-radius:9px;padding:12px;margin:12px 0 8px}.actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.muted,small{color:#69716c;font-size:13px}.check{display:flex;align-items:center;gap:10px;min-height:52px;margin-top:18px;cursor:pointer}.check input{width:24px;height:24px;accent-color:#315b44;flex-shrink:0}.page-nav{display:flex;justify-content:space-between;gap:12px;margin-top:18px}.page-nav button{min-width:90px}details{margin:16px 0}summary{cursor:pointer;min-height:44px;display:flex;align-items:center;gap:6px}summary::before{content:'+';color:#69716c}details[open]>summary::before{content:'−'}[hidden]{display:none!important}.apps{display:grid;gap:12px;margin-top:16px}.app{position:relative;display:block;aspect-ratio:15/4;border-radius:10px;overflow:hidden;background:#293d36;color:white;text-decoration:none}.app img{width:100%;height:100%;object-fit:cover;display:block}.app span{position:absolute;inset:0;display:flex;align-items:flex-end;padding:10px 14px;background:linear-gradient(transparent 30%,#000a);font-size:21px;font-weight:650}.app:focus-visible{outline:3px solid #749572;outline-offset:3px}ol{padding-left:22px}li{margin:12px 0}footer{border-top:1px solid #e0e6dc;margin-top:24px;padding-top:14px;display:flex;justify-content:space-between;gap:12px;font-size:13px}#copy-status{min-height:20px;margin:8px 0;font-size:13px;color:#397246}
 </style>
 <main>
-<small>AI BUILDERS · CYD APP EXPLORER</small>
-<h1>Small screen.<br>Your app.</h1>
-<p>Pick an app. Or make one at your next buildathon.</p>
-<div class="actions"><button class="button primary" data-open="connect">Use a display</button><button class="button" data-open="build">Build an app</button></div>
-<h2>Explore</h2>
-<div class="actions"><button id="previous" aria-label="Previous app">←</button><button id="next" aria-label="Next app">→</button></div>
-<div class="carousel" id="apps" aria-label="App directory" tabindex="0"><p>Loading apps…</p></div>
-<p class="muted">Browser previews work now. CYD streaming still needs a computer.</p>
-<details id="connect"><summary>Use a display</summary>
-<p>On your computer, clone the public repo:</p>
+<header><small>AI BUILDERS</small><a href="https://github.com/Clubria/robobuilders-cyd">GitHub ↗</a></header>
+<h1>CYD Setup Guide</h1>
+<nav class="steps" role="tablist" aria-label="Setup steps">
+<button id="tab-0" role="tab" aria-controls="step-0" aria-selected="true" data-step="0"><b>1</b>Clone</button>
+<button id="tab-1" role="tab" aria-controls="step-1" aria-selected="false" data-step="1"><b>2</b>Run</button>
+<button id="tab-2" role="tab" aria-controls="step-2" aria-selected="false" data-step="2"><b>3</b>Wi-Fi</button>
+<button id="tab-3" role="tab" aria-controls="step-3" aria-selected="false" data-step="3"><b>4</b>Apps</button>
+</nav>
+<section id="step-0" role="tabpanel" aria-labelledby="tab-0">
+<h2>Get the code</h2>
+<div class="platform" aria-label="Computer type"><button data-os="mac" aria-pressed="true">Mac</button><button data-os="windows" aria-pressed="false">Windows</button></div>
+<p id="terminal-label">Open Terminal. Paste:</p>
 <pre id="clone">git clone https://github.com/Clubria/robobuilders-cyd.git
-cd robobuilders-cyd</pre><button data-copy="clone">Copy commands</button>
-<a class="button" href="/downloads/cyd-bridge.zip" download>Download ZIP instead</a>
-<p>Open that folder in your coding agent. Paste:</p>
-<pre id="prompt">Read AGENTS.md. Start the Clubria display bridge.
-Detect my display without flashing it.
-Save the LAN bridge address over USB.
-Guide me through Wi-Fi QR setup.
-Keep passwords private and the bridge LAN-only.</pre><button data-copy="prompt">Copy prompt</button>
-<p>Keep the computer awake. Plug in the display; use its <b>2 Wi-Fi</b> and <b>3 Phone</b> QR pages.</p>
-<details><summary>Without an agent</summary><p>Requires Node22+, pnpm, Python3 and Chrome on a Mac.</p><pre id="run">pnpm install --frozen-lockfile
-pnpm dev:clubria</pre><button data-copy="run">Copy commands</button><p>Then open <a href="http://localhost:3088/preview">localhost:3088/preview</a>. <a href="/downloads/cyd-bridge.zip" download>ZIP instead of Git</a>.</p></details>
-</details>
-<details id="build"><summary>Build an app</summary>
-<div class="actions"><a class="button primary" href="/downloads/ai-builders-app-starter.zip" download>↓ App starter</a><a class="button" href="https://github.com/Clubria/robobuilders-cyd/fork">Fork repo ↗</a></div>
-<p>Open the starter in your coding agent. Paste:</p>
+cd robobuilders-cyd</pre>
+<div class="actions"><button data-copy="clone" class="primary">Copy commands</button><a href="/downloads/cyd-bridge.zip" download class="button">or ZIP ↓</a></div>
+<details><summary>Need help?</summary><p class="muted">No <code>git</code>? <a href="https://git-scm.com/downloads">Install Git</a> or unzip the ZIP, then open Terminal/PowerShell in its <code>cyd-bridge</code> folder.</p></details>
+<label class="check"><input type="checkbox" data-check="0">Repo folder is open</label>
+<div class="page-nav"><span></span><button class="primary" data-next="1">Next →</button></div>
+</section>
+<section id="step-1" role="tabpanel" aria-labelledby="tab-1" hidden>
+<h2>Start the bridge</h2>
+<pre id="run">pnpm install --frozen-lockfile
+pnpm dev:clubria</pre>
+<button class="primary" data-copy="run">Copy commands</button>
+<p><a href="http://localhost:3088/preview" target="_blank" rel="noopener">Open localhost:3088/preview ↗</a></p>
+<p class="muted" id="platform-note">Keep Terminal open and the computer awake.</p>
+<details><summary>Ask my AI agent instead</summary>
+<pre id="prompt">Read AGENTS.md. Set up the CYD bridge for me.
+Check the tools and open the local preview.
+Identify my board; do not flash it.
+Show the LAN renderer address and help with Wi-Fi.
+Keep passwords private and the bridge LAN-only.</pre><button data-copy="prompt">Copy prompt</button></details>
+<details><summary>Missing tools?</summary><p class="muted">Needs <a href="https://git-scm.com/downloads">Git</a>, <a href="https://nodejs.org/en/download">Node22+</a>, <a href="https://pnpm.io/installation">pnpm</a> and <a href="https://www.google.com/chrome/">Chrome</a>. USB helpers also need Python3 on Mac. Ask your agent to check first.</p></details>
+<label class="check"><input type="checkbox" data-check="1">The preview opens</label>
+<div class="page-nav"><button data-next="0">← Back</button><button class="primary" data-next="2">Next →</button></div>
+</section>
+<section id="step-2" role="tabpanel" aria-labelledby="tab-2" hidden>
+<h2>Connect the display</h2>
+<ol><li>Plug in USB for power.</li><li>On the CYD: <b>2 Wi-Fi</b>. Scan its QR with your phone.</li><li>Then <b>3 Phone</b>. Scan, choose home <b>2.4 GHz Wi-Fi</b>, and save.</li></ol>
+<details><summary>No pictures?</summary><p class="muted">In phone setup → Advanced, use the renderer address printed in Terminal, ending in <b>:3088</b>. Keep both devices on the same Wi-Fi. A tick is your checklist, not connection proof.</p></details>
+<label class="check"><input type="checkbox" data-check="2">Pictures appear on my CYD</label>
+<div class="page-nav"><button data-next="1">← Back</button><button class="primary" data-next="3">Choose app →</button></div>
+</section>
+<section id="step-3" role="tabpanel" aria-labelledby="tab-3" hidden>
+<h2>Pick an app</h2>
+<div id="apps" class="apps" aria-label="App previews"><p class="muted">Loading…</p></div>
+<p class="muted">Images open browser previews. CYD app switching still needs the local bridge; cloud rendering is not live.</p>
+<details><summary>Build your own app</summary>
+<div class="actions"><a class="button primary" href="/downloads/ai-builders-app-starter.zip" download>Starter ZIP ↓</a><a href="https://github.com/Clubria/robobuilders-cyd/fork">Fork repo ↗</a></div>
 <pre id="build-prompt">Build my idea: [describe it].
-Prioritize 240×320 CYD screens and 44px touch buttons.
-Keep a browser preview for testing.
-Help me host on HTTPS and fill in app.json.
-Never include secrets or private data.</pre><button data-copy="build-prompt">Copy prompt</button>
-<p>Ready? <a href="https://github.com/Clubria/robobuilders-cyd/issues/new?template=add-app.yml">Submit your app link</a> or <a href="https://github.com/Clubria/robobuilders-cyd/blob/main/CONTRIBUTING.md">open a pull request</a>. Public repo; no access request needed.</p>
-</details>
-<p id="copy-status" role="status" class="muted"></p>
-<details><summary>Hardware, speed and privacy</summary><ul>
-<li>Supported prototype boards: ESP32-024 2.4″ and GUITION JC2432W328 2.8″. Other boards need verified wiring and firmware.</li>
-<li>USB video has measured about 1 FPS at115200. Faster USB is experimental. Wi-Fi game samples on the larger board reached5–7 FPS; higher observations still need measurement.</li>
-<li>No built-in camera or microphone. The phone scans QR codes. A recording app needs an authorized account and an actual audio source.</li>
-<li>Wi-Fi passwords stay on your display. The public ZIP excludes device settings, credentials, backups and browser profiles.</li>
-<li>The local bridge is unauthenticated. Trusted LAN only; do not expose port3088 to the internet.</li>
-</ul></details>
-<footer><a href="https://github.com/Clubria/robobuilders-cyd">GitHub</a> · <a href="/apps.json">App catalogue JSON</a></footer>
+Prioritize a 240×320 CYD with 44px touch buttons.
+Keep a browser preview. Host on HTTPS.
+Fill in app.json. Never include secrets.</pre><button data-copy="build-prompt">Copy prompt</button>
+<p><a href="https://github.com/Clubria/robobuilders-cyd/issues/new?template=add-app.yml">Submit your app ↗</a></p></details>
+<div class="page-nav"><button data-next="2">← Back</button><button id="reset-checks">Reset ticks</button></div>
+</section>
+<p id="copy-status" role="status" aria-live="polite"></p>
+<footer><span class="muted">Public repo · no access request</span><a href="/apps.json">Apps JSON</a></footer>
 </main>
 <script>
-const carousel=document.querySelector('#apps');
-for(const button of document.querySelectorAll('[data-open]'))button.onclick=()=>{const panel=document.getElementById(button.dataset.open);panel.open=true;panel.scrollIntoView({behavior:'smooth',block:'start'})};
-fetch('/apps.json').then(r=>{if(!r.ok)throw Error();return r.json()}).then(data=>{
-  carousel.replaceChildren();
-  for(const app of data.apps){const url=new URL(app.url);if(url.protocol!=='https:'||url.username||url.password)continue;
-    const card=document.createElement('article');card.className='app';
-    const image=document.createElement('div');image.className='preview';image.style.setProperty('--app-color',/^#[0-9a-f]{6}$/i.test(app.color)?app.color:'#317567');image.textContent=app.name;
-    const text=document.createElement('p');text.textContent=app.description;
-    const access=document.createElement('p');access.className='muted';access.textContent=app.access;
-    const link=document.createElement('a');link.className='button';link.href=url.href;link.textContent='Preview ↗';link.rel='noopener noreferrer';link.target='_blank';
-    card.append(image,text,access,link);carousel.append(card);
-  }
-}).catch(()=>{carousel.textContent='Apps unavailable. Please reload.'});
-document.querySelector('#previous').onclick=()=>carousel.scrollBy({left:-carousel.clientWidth-16,behavior:'smooth'});
-document.querySelector('#next').onclick=()=>carousel.scrollBy({left:carousel.clientWidth+16,behavior:'smooth'});
-for(const button of document.querySelectorAll('[data-copy]'))button.onclick=async()=>{try{await navigator.clipboard.writeText(document.getElementById(button.dataset.copy).textContent);button.textContent='Copied ✓';document.querySelector('#copy-status').textContent='Copied. Paste it in your Terminal or coding agent.'}catch{document.querySelector('#copy-status').textContent='Select and copy the text above.'}};
+let current=0;
+function showStep(index){const moveFocus=Boolean(document.activeElement.closest('[role=tabpanel]'));current=index;for(let i=0;i<4;i++){document.querySelector('#step-'+i).hidden=i!==index;const tab=document.querySelector('#tab-'+i);tab.setAttribute('aria-selected',String(i===index));tab.tabIndex=i===index?0:-1}if(moveFocus)document.querySelector('#tab-'+index).focus({preventScroll:true});document.querySelector('h1').scrollIntoView({block:'start'});document.querySelector('#copy-status').textContent=''}
+for(const button of document.querySelectorAll('[data-step]'))button.onclick=()=>showStep(Number(button.dataset.step));
+for(const button of document.querySelectorAll('[data-next]'))button.onclick=()=>showStep(Number(button.dataset.next));
+document.querySelector('[role=tablist]').onkeydown=event=>{if(event.key==='ArrowRight'||event.key==='ArrowLeft'){event.preventDefault();showStep((current+(event.key==='ArrowRight'?1:3))%4);document.querySelector('#tab-'+current).focus()}};
+for(const check of document.querySelectorAll('[data-check]'))check.onchange=()=>document.querySelector('#tab-'+check.dataset.check).classList.toggle('done',check.checked);
+document.querySelector('#reset-checks').onclick=()=>{for(const check of document.querySelectorAll('[data-check]')){check.checked=false;check.dispatchEvent(new Event('change'))}showStep(0)};
+function setOS(os){for(const b of document.querySelectorAll('[data-os]'))b.setAttribute('aria-pressed',String(b.dataset.os===os));document.querySelector('#terminal-label').textContent=os==='windows'?'Open PowerShell. Paste:':'Open Terminal. Paste:';document.querySelector('#platform-note').textContent=os==='windows'?'Keep PowerShell open. Windows uses Wi-Fi; USB helpers are Mac-only.':'Keep Terminal open and the computer awake.'}
+for(const b of document.querySelectorAll('[data-os]'))b.onclick=()=>setOS(b.dataset.os);
+setOS(/win/i.test(navigator.userAgentData?.platform??navigator.platform)?'windows':'mac');
+for(const button of document.querySelectorAll('[data-copy]'))button.onclick=async()=>{try{await navigator.clipboard.writeText(document.getElementById(button.dataset.copy).textContent);document.querySelector('#copy-status').textContent='Copied ✓'}catch{document.querySelector('#copy-status').textContent='Select and copy the commands above.'}};
+fetch('/apps.json').then(r=>{if(!r.ok)throw Error();return r.json()}).then(data=>{const list=document.querySelector('#apps');list.replaceChildren();for(const app of data.apps){const url=new URL(app.url);if(url.protocol!=='https:'||url.username||url.password)continue;const link=document.createElement('a');link.className='app';link.href=url.href;link.target='_blank';link.rel='noopener noreferrer';link.setAttribute('aria-label','Preview '+app.name);const image=document.createElement('img');image.src='/previews/'+encodeURIComponent(app.id)+'.jpg';image.alt='';image.loading='lazy';const label=document.createElement('span');label.textContent=app.name;link.append(image,label);list.append(link)}}).catch(()=>{document.querySelector('#apps').textContent='Apps unavailable. Reload to retry.'});
+showStep(0);
 </script>
 </html>

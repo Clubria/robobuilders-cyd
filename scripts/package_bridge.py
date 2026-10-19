@@ -16,6 +16,7 @@ FILES += [f'scripts/{name}' for name in (
 FILES += [f'firmware/cyd_pixsim/{name}' for name in (
     'board_display.h', 'bridge_address.h', 'cyd_pixsim.ino', 'launcher.h', 'receiver_control.h', 'setup_page.h')]
 FILES += ['firmware/README.md', '.opencode/skills/cyd-setup/scripts/connect.py']
+FILES += ['scripts/start-clubria.mjs', 'site/previews/clubria.jpg', 'site/previews/pixsim.jpg']
 
 
 def package(root=ROOT, destination=None):

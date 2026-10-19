@@ -14,6 +14,9 @@ def build():
     for name in ['index.html', 'apps.json']:
         shutil.copyfile(ROOT / 'site' / name, destination / name)
     shutil.copyfile(ROOT / 'site/vercel-static.json', destination / 'vercel.json')
+    (destination / 'previews').mkdir(exist_ok=True)
+    for name in ['clubria.jpg', 'pixsim.jpg']:
+        shutil.copyfile(ROOT / 'site/previews' / name, destination / 'previews' / name)
     shutil.copyfile(bundle, destination / 'downloads/cyd-bridge.zip')
     with zipfile.ZipFile(destination / 'downloads/ai-builders-app-starter.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
         for name in ['index.html', 'app.json', 'README.md']:

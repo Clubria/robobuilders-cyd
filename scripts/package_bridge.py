@@ -7,7 +7,7 @@ import zipfile
 from package_cyd_skills import public_file
 
 ROOT = Path(__file__).resolve().parents[1]
-FILES = ['package.json', 'pnpm-lock.yaml', 'README.md', 'AGENTS.md', '.gitignore', 'CONTRIBUTING.md', 'site/index.html', 'site/apps.json', 'scripts/check-apps.mjs']
+FILES = ['package.json', 'pnpm-lock.yaml', 'README.md', 'AGENTS.md', '.gitignore', 'CONTRIBUTING.md', 'HOSTING.md', 'vercel.json', 'site/index.html', 'site/apps.json', 'scripts/check-apps.mjs', 'starter/index.html', 'starter/app.json', 'starter/README.md']
 FILES += [f'server/{name}.mjs' for name in (
     'bridge', 'capture', 'clubria', 'compact', 'cyd-ui', 'guide', 'index', 'input',
     'latch', 'portrait', 'presence', 'preview', 'render', 'screencast', 'weather', 'world-view')]

@@ -12,5 +12,6 @@ for (const app of catalogue.apps) {
   const url = new URL(app.url);
   assert.equal(url.protocol, 'https:'); assert.ok(!url.username && !url.password);
   assert.match(app.color, /^#[a-f0-9]{6}$/i);
+  assert.ok(Array.isArray(app.devices) && app.devices.length > 0 && app.devices.every(device => ['phone','tablet','desktop'].includes(device)));
 }
 console.log(`PASS: ${ids.size} public app entries, HTTPS URLs, renderer not falsely advertised.`);

@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>My AI Builders App</title>
+<style>
+*{box-sizing:border-box}body{font:18px system-ui;margin:0;background:#f7f8f4;color:#17202a}main{width:min(100%,600px);margin:auto;padding:16px}h1{font-size:clamp(24px,6vw,40px);line-height:1.1}button{font:inherit;min-height:48px;min-width:48px;padding:10px 16px;border:1px solid #c7cfc7;border-radius:10px;background:white}nav{display:flex;gap:8px;align-items:center;flex-wrap:wrap}output{font-size:48px;display:block;margin:16px 0}.preview{aspect-ratio:15/4;background:#317567;color:white;display:grid;place-items:center;border-radius:12px}small{color:#63706b}
+</style>
+<main><small>AI BUILDERS · YOUR BUILDATHON APP</small><h1>Make this your idea.</h1>
+<div class="preview">Your240×64 preview shape</div>
+<output id="count" aria-live="polite">0</output>
+<nav><button id="minus" aria-label="Subtract one">−</button><button id="plus" aria-label="Add one">＋</button><button id="reset">Reset</button></nav>
+<p>CYD-first. Preview in a browser; stream to the display. No account, tracking or backend.</p></main>
+<script>let count=0;const show=()=>document.querySelector('#count').value=count;document.querySelector('#plus').onclick=()=>{count++;show()};document.querySelector('#minus').onclick=()=>{count--;show()};document.querySelector('#reset').onclick=()=>{count=0;show()};</script>
+</html>

@@ -8,6 +8,7 @@
       "description": "Event picker, slides and recorder controls.",
       "url": "https://aibuilders.club/events",
       "access": "Public browsing; event controls require sign-in.",
+      "devices": ["phone", "tablet", "desktop"],
       "color": "#7759c2"
     },
     {
@@ -16,6 +17,7 @@
       "description": "Explore the city with your character.",
       "url": "https://pixsim.vercel.app/newyork",
       "access": "Game rendered by the computer or a configured server.",
+      "devices": ["phone", "tablet", "desktop"],
       "color": "#317567"
     }
   ]

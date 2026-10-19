@@ -1,0 +1,9 @@
+{
+  "id": "my-buildathon-app",
+  "name": "My Buildathon App",
+  "description": "Replace this with one short sentence about your app.",
+  "url": "https://your-app.example",
+  "access": "No account required.",
+  "devices": ["phone", "tablet", "desktop"],
+  "color": "#317567"
+}

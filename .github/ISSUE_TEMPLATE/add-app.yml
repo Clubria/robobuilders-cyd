@@ -1,0 +1,46 @@
+name: Add a buildathon app
+description: Submit your app for the AI Builders App Explorer.
+title: "App: "
+body:
+  - type: markdown
+    attributes:
+      value: "Share a working HTTPS app. Submissions are reviewed, not automatically executed. Never include credentials."
+  - type: input
+    id: name
+    attributes:
+      label: App name
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: HTTPS app URL
+      placeholder: "https://your-app.example"
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: What does it do?
+      description: Include sign-in, microphone, camera or other requirements.
+    validations:
+      required: true
+  - type: checkboxes
+    id: devices
+    attributes:
+      label: Devices you tested
+      options:
+        - label: Phone
+        - label: Tablet
+        - label: Computer
+  - type: input
+    id: source
+    attributes:
+      label: Source repository (optional)
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Before submitting
+      options:
+        - label: I can share this app publicly, and have not included secrets or private data.
+          required: true

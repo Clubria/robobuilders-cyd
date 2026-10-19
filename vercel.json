@@ -1,0 +1,6 @@
+{
+  "framework": null,
+  "installCommand": "pnpm install --frozen-lockfile --ignore-scripts",
+  "buildCommand": "pnpm build:site",
+  "outputDirectory": "artifacts/site"
+}

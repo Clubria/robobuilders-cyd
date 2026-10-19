@@ -1,5 +1,11 @@
 # CYD / Pixsim: JPEG image and live stream
 
+**CYD App Explorer:** https://aibuilders-cyd.vercel.app . Public source, a tiny
+app starter, copyable setup/AI prompts, and app submissions are available without
+requesting repository access. See [hosting status](HOSTING.md) for the pending
+`aib.club/cyd` shortlink and the distinction between the public directory and
+not-yet-deployed authenticated Amsterdam rendering.
+
 Local, independently implemented server using Puppeteer and the
 `GET /` JPEG protocol from [SharkSharp/cyd-browser](https://github.com/SharkSharp/cyd-browser).
 Supports a frozen test image or shared live JPEG captures, an MJPEG browser

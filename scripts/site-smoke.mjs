@@ -5,6 +5,10 @@ import { once } from 'node:events';
 import puppeteer from 'puppeteer';
 import { settings } from '../server/render.mjs';
 
+const deploymentConfig=JSON.parse(await readFile(new URL('../artifacts/site/vercel.json',import.meta.url),'utf8'));
+assert.equal(deploymentConfig.buildCommand,null);
+assert.equal(deploymentConfig.outputDirectory,'.');
+
 const files = new Map(await Promise.all([
   ['/', 'index.html', 'text/html'], ['/apps.json', 'apps.json', 'application/json'],
   ['/downloads/cyd-bridge.zip', 'downloads/cyd-bridge.zip', 'application/zip'],

@@ -26,10 +26,15 @@ already-reviewed static build with their authenticated Vercel CLI:
 pnpm build:site
 pnpm test:site
 vercel link --cwd artifacts/site --project aibuilders-cyd --scope admin-2433s-projects
-vercel deploy --cwd artifacts/site --prod --scope admin-2433s-projects
+vercel deploy --cwd artifacts/site --local-config vercel.json --prod --scope admin-2433s-projects
 ```
 
 When Git integration is connected, inspect its deployment for the intended commit
 before running another CLI deployment. Verify the production alias, both ZIPs,
 and `/apps.json` anonymously. Never point a public domain at the unauthenticated
 port3088 bridge.
+
+Git integration could not connect to the Clubria repository with this Vercel
+account. An owner must grant the Vercel GitHub app access before automatic
+publishing works. Until then, use the manual static command above; its explicit
+config prevents rebuilding the already-built files with the root Git-build config.
